@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		514E6C131E945B1400285278 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514E6C121E945B1400285278 /* main.swift */; };
+		514E6C1B1E945BCD00285278 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514E6C191E945BCD00285278 /* Package.swift */; };
+		51DA1CF21E992277003FAFCB /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 51DA1CF11E992277003FAFCB /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +25,9 @@
 
 /* Begin PBXFileReference section */
 		514E6C0F1E945B1400285278 /* zabbix-rest-plugin */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "zabbix-rest-plugin"; sourceTree = BUILT_PRODUCTS_DIR; };
-		514E6C121E945B1400285278 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		514E6C191E945BCD00285278 /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
+		514E6C1A1E945BCD00285278 /* Sources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sources; sourceTree = "<group>"; };
+		51DA1CF11E992277003FAFCB /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +44,9 @@
 		514E6C061E945B1400285278 = {
 			isa = PBXGroup;
 			children = (
-				514E6C111E945B1400285278 /* zabbix-rest-plugin */,
+				51DA1CF11E992277003FAFCB /* README.md */,
+				514E6C191E945BCD00285278 /* Package.swift */,
+				514E6C1A1E945BCD00285278 /* Sources */,
 				514E6C101E945B1400285278 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -52,14 +57,6 @@
 				514E6C0F1E945B1400285278 /* zabbix-rest-plugin */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		514E6C111E945B1400285278 /* zabbix-rest-plugin */ = {
-			isa = PBXGroup;
-			children = (
-				514E6C121E945B1400285278 /* main.swift */,
-			);
-			path = "zabbix-rest-plugin";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -121,7 +118,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				514E6C131E945B1400285278 /* main.swift in Sources */,
+				51DA1CF21E992277003FAFCB /* README.md in Sources */,
+				514E6C1B1E945BCD00285278 /* Package.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,6 +253,7 @@
 				514E6C181E945B1400285278 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
