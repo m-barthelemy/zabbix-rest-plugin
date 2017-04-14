@@ -19,12 +19,14 @@ public class RestMetrics {
         
         let extractor = try ResponseParseHelperHelper.factory(for: format)
         
-        return try extractor.getPath(data: responseBody, path: path) ?? ""
+        return try extractor.getPath(data: responseBody, path: path)?
+            .trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            ?? ""
     }
     
     public static func status(parameters: Array<String> ) throws -> String {
 
-        let (verb, url, path) = try getParams(parameters)
+        let (verb, url, _) = try getParams(parameters)
         
         let (_, statusCode, _) = try RestRequest.call(verb: verb, url: url, parseResponse: false)
         

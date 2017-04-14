@@ -5,7 +5,8 @@ import ZabbixModule
 
 public class RestRequest {
     
-    public static func call(verb: String = "GET", url: String, headers: Dictionary<String,String>? = nil, body: String? = nil, parseFormat: String? = nil, parseResponse: Bool = true) throws -> (String, Int, String) {
+    public static func call(verb: String = "GET", url: String, headers: Dictionary<String,String>? = nil,
+                            body: String? = nil, parseFormat: String? = nil, parseResponse: Bool = true) throws -> (String, Int, String) {
         
         
         var result: String = ""
@@ -16,17 +17,17 @@ public class RestRequest {
         var config: URLSessionConfiguration!
         var urlSession: URLSession!
         
-        config = URLSessionConfiguration.default //URLSessionConfiguration.ephemeral
+        config = URLSessionConfiguration.default
         urlSession = URLSession(configuration: config)
         
         let HTTPHeaderField_ContentType  = "Content-Type"
-        let ContentType_ApplicationJson  = "application/json"
+        let ContentType_ApplicationJson  = parseFormat ?? "application/json"
         
         let callURL = URL.init(string: url)
         var request = URLRequest.init(url: callURL!)
         
         // See if it should be the default Zabbix.Timeout
-        request.timeoutInterval = 10.0 // TimeoutInterval in Second
+        request.timeoutInterval = 15.0 // TimeoutInterval in Second
         request.addValue(ContentType_ApplicationJson, forHTTPHeaderField: HTTPHeaderField_ContentType)
         request.httpMethod = verb
         request.httpBody = body?.data(using: .utf8)
@@ -36,15 +37,17 @@ public class RestRequest {
         let dataTask = urlSession //.dataTask(with: request) { (data,response,error) in
             .dataTask(with: request, completionHandler: { data, response, error in
             if let redirected = response?.url{
+                // As of Swift 3.1.0, Redirects always fail with a generic error on Linux, thus making them unusable.
                 Zabbix.log(message: "[zbx-rest] DEBUG Got redirected to \(response?.url)")
             }
             if error != nil{
                 exception = error
                 Zabbix.log(message: "[zbx-rest]: \(verb) to '\(url)' error: \(exception!.localizedDescription)")
-                //semaphore.signal()
             }
+                
             guard response != nil else{
-                Zabbix.log(message: "[zbx-rest] DEBUG Response is NIL")
+                // No response, so we cannot continue and process it. Early return with, hopefully, an exception
+                // telling why we have no response data. If not, set e generic exception.
                 if exception == nil{
                     exception = RestModuleError.BadResponseFormat("Got null response")
                 }
@@ -63,34 +66,19 @@ public class RestRequest {
             
             if let format = response!.mimeType {
                 resultFormat = format
-                Zabbix.log(message: "[zbx-rest] DEBUG respFormat=\(resultFormat)")
-                
-                /*if self.formats.filter({ resultFormat.hasSuffix($0) }).count == 0 && parseFormat == nil {
-                    
-                    exception = RestModuleError.BadResponseFormat("Response Content-Type '\(resultFormat)' is unsupported.")
-                    Zabbix.log(message: "[zbx-rest] DEBUG exception= \(exception)")
-                    semaphore.signal()
-                }*/
             }
-            
-            /*do {
-                let resultJson : Any? = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers)
-                print("JSON Result=",resultJson!)
-                result = "\(resultJson)"
-            } catch {
-                exception = error
-                //return
-            }*/
+                
+            result = String(data: data!, encoding: .utf8)!
             semaphore.signal() // at this point we're done and have the response data
-            
         })
         
         dataTask.resume()
         semaphore.wait()
-        //Zabbix.log(message: "[zbx-rest]: DEBUG after semaphore.wait()")
+        
         if exception != nil {
             throw exception!
         }
+        
         return (result, statusCode, resultFormat)
         
     }

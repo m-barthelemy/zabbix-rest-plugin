@@ -7,13 +7,11 @@ public class XmlPath : DataPathExtractor{
     
     public func getPath(data: String, path: String) throws -> String?{
         if let doc = Kanna.XML(xml: data, encoding: .utf8) {
-            //print(doc.title)
-            
-            // Search for nodes by XPath
-            return "\(doc.xpath(path))"
-            //for link in doc.xpath(path) {
-            //print(link.text)
-            //}
+            var content = ""
+            for node in doc.xpath(path){
+                content += node.innerHTML!
+            }
+            return content
         }
         return nil
     }
