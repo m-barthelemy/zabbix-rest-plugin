@@ -78,9 +78,10 @@ public class JsonPath: DataPathExtractor{
                         // even if it doesn't really make sense with JDON (no attributes so we treat it like a property)
                         let trimChars = CharacterSet(charactersIn: "@")
                         let property = matched[0].trimmingCharacters(in: trimChars)
-                        pathSubscript.append(matched[0])
+                        pathSubscript.append(property)
                     } // else path wants to find an array element by index (type /[i])
-                    pathSubscript.append(Int(matched[1])!)
+                    let index = Int(matched[1])!
+                    pathSubscript.append(index+1)
                 //}
             }
             else{

@@ -6,19 +6,16 @@ import ZabbixModule
 public class RestRequest {
     
     public static func call(verb: String = "GET", url: String, headers: Dictionary<String,String>? = nil,
-                            body: String? = nil, parseFormat: String? = nil, parseResponse: Bool = true) throws -> (String, Int, String) {
+                            body: String? = nil, parseFormat: String? = nil, parseResponse: Bool = true) throws -> (String?, Int, String) {
         
         
-        var result: String = ""
+        var result: String?
         var statusCode = 0
         var resultFormat: String = ""
         var exception: Error?
         
-        var config: URLSessionConfiguration!
-        var urlSession: URLSession!
-        
-        config = URLSessionConfiguration.default
-        urlSession = URLSession(configuration: config)
+        let config: URLSessionConfiguration! = URLSessionConfiguration.default
+        let urlSession: URLSession! = URLSession(configuration: config)
         
         let HTTPHeaderField_ContentType  = "Content-Type"
         let ContentType_ApplicationJson  = parseFormat ?? "application/json"
@@ -68,7 +65,7 @@ public class RestRequest {
                 resultFormat = format
             }
                 
-            result = String(data: data!, encoding: .utf8)!
+            result = String(data: data!, encoding: .utf8)
             semaphore.signal() // at this point we're done and have the response data
         })
         

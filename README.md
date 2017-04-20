@@ -1,6 +1,6 @@
 # zabbix-REST
 
-A Zabbix plugin (Loadable Module) to make REST calls and parse responses.
+A native Zabbix plugin (Loadable Module) to make REST calls and parse responses.
 
 
 ### Why?
@@ -18,22 +18,36 @@ This plugin currently provides 2 Zabbix Item keys :
 * `rest.status[]` : makes an HTTP request and returns the HTTP response status code.
 
 
+##### rest.request[`verb`=GET, `URL`, _`responsePath`=/, `format`=json|xml|html, `requestHeaders`=null, `requestBody`=null_ ]
 
 
-##### rest.request[`verb`=GET, `URL`, _[`responsePath`=/, `format`=auto|json|xml|html, `requestHeaders`=null, `requestBody`=null]_ ]
-
-* `verb`: if left empty, defaults to `GET`. Can be `GET`, `POST`, `PUT`, `PATCH`, `DELETE`.
+* `verb`: Can be `GET`, `POST`, `PUT`, `PATCH`, `DELETE`. If left empty, defaults to `GET`. 
 
 * `URL`: Complete URL of the HTTP endpoint to query.
 
 * `responsePath` (optional): "Path" to the parsed response value to extract and return. Xpath syntax is supported for XML and HTML. For JSON, a very limited syntax is available, see examples below. If left empty, defaults to `/` ("all").
 
-* `format` (optional): by default the response format is detected automatically, using the response `Content-Type` header. This option allows to set the content type of the request body if the `requestBody` option is used, as well as "forcing" the format of the response. The following values are supported: `auto`, `json`, `xml`, `html`.
+* `format` (optional): by default the response format is detected automatically, using the response `Content-Type` header. This option allows to set the content type of the request body if the `requestBody` option is used, as well as "forcing" the format of the response. The following values are supported: `json`, `xml`, `html`.
 
 * `requestHeaders` (optional): Request headers, as a JSON array of key-value pairs. Example: `[{"Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR..."}]`.
 
 * `requestBody` (optional): Request body. Must be quoted and inner quotes escaped if it contains spaces. 
 
+
+### Path syntax
+
+* For XML and HTML: compatible with Xpath. See for example https://www.w3schools.com/xml/xpath_syntax.asp
+
+
+* For JSON:
+
+Access a document property: `/propertyName` 
+
+Or for nested documents: `/propertyName/subPropertyName`
+
+Access Array item: `/arrayPropertyName[index]`
+
+Note: for consistency with Xpath, arrays start at index 1.
 
 
 ### Examples
@@ -60,19 +74,6 @@ This plugin currently provides 2 Zabbix Item keys :
 
 `rest.request[GET,https://jsonplaceholder.typicode.com/posts/1,/userId]` : retrieves the post with id `1` and returns its `userId` field.
 
-
-### Path syntax
-
-* For XML and HTML: compatible with Xpath. See for example https://www.w3schools.com/xml/xpath_syntax.asp
-
-
-* For JSON:
-
-    Access a document property: `/propertyName` 
-
-    Or for nested documents: `/propertyName/subPropertyName`
-
-    Access Array item: `/arrayPropertyName[index]`
 
 
 ### Limitations
