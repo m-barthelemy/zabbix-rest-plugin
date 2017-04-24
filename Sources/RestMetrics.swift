@@ -6,16 +6,11 @@ import ZabbixModule
 
 public class RestMetrics {
 
-    // rest.request[method=GET, URL, respPath [,format=json|xml|html, headers={}, body=null]
-    // rest.status[method=GET, URL, headers={}, body=null, responseFormat=auto, responseParsedPath]
-    // rest.diff[method=GET, URL, headers={}, body=null, responseFormat=auto, responseParsedPath]
-    // rest.discovery[method=GET, URL, headers={}, body=null, respFormat=auto, respPath[, sslStrict=1]]
-
     public static func request(parameters: Array<String> ) throws -> String {
         
         let (verb, url, path, format, headers, body) = try getParams(parameters)
         
-        let (responseBody, _, responseFormat) = try RestRequest.call(verb: verb, url: url, body: body)
+        let (responseBody, _, responseFormat) = try RestRequest.call(verb: verb, url: url, headers: headers, body: body)
         guard responseBody != nil else{
             return String()
         }
@@ -44,13 +39,14 @@ public class RestMetrics {
     }
     
 
-    private static func getParams(_ zbxParams: Array<String>) throws -> (String, String, String, String?, Dictionary<String,String>, String?) {
+    private static func getParams(_ zbxParams: Array<String>) throws ->
+        (String, String, String, String?, Dictionary<String,String>, String?) {
         
         var verb: String = "GET"
         var url: String
         var path: String = "/"
         var format: String?
-        var headers: Dictionary<String,String>
+        var headers = [String : String]()
         var body: String?
         
         switch zbxParams.count {
@@ -61,8 +57,9 @@ public class RestMetrics {
                 fallthrough
             case 5:
                 if !zbxParams[4].isEmpty {
-                    let headersData = zbxParams[4].data(using: .utf8)
-                    headers = try getHeaders(headersData)
+                    if let headersData = zbxParams[4].data(using: .utf8){
+                        headers = try getHeaders(headersData)
+                    }
                 }
                 fallthrough
             case 4:
@@ -90,11 +87,22 @@ public class RestMetrics {
         
     }
     
-    private func getHeaders(_ data: Data?) throws -> [String : String] {
+    
+    /*
+     Parses a JSON objects as key-value pairs for request headers
+    */
+    private static func getHeaders(_ data: Data?) throws -> [String : String] {
         var headers = [String : String]()
-        if data == nil{
+        guard data != nil else {
             return headers
+        }
+
+        if let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String: Any]{
+            for (header, value) in json{
+                headers[header] = "\(value)"
+            }
         }
         return headers
     }
+    
 }

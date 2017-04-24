@@ -5,7 +5,7 @@ import ZabbixModule
 
 public class RestRequest {
     
-    public static func call(verb: String = "GET", url: String, headers: Dictionary<String,String>? = nil,
+    public static func call(verb: String = "GET", url: String, headers: Dictionary<String,String> = [String : String](),
                             body: String? = nil, parseFormat: String? = nil, parseResponse: Bool = true) throws -> (String?, Int, String) {
         
         
@@ -17,15 +17,15 @@ public class RestRequest {
         let config: URLSessionConfiguration! = URLSessionConfiguration.default
         let urlSession: URLSession! = URLSession(configuration: config)
         
-        let HTTPHeaderField_ContentType  = "Content-Type"
-        let ContentType_ApplicationJson  = parseFormat ?? "application/json"
-        
         let callURL = URL.init(string: url)
         var request = URLRequest.init(url: callURL!)
         
         // See if it should be the default Zabbix.Timeout
         request.timeoutInterval = 15.0 // TimeoutInterval in Second
-        request.addValue(ContentType_ApplicationJson, forHTTPHeaderField: HTTPHeaderField_ContentType)
+        
+        for(name, value) in headers {
+            request.addValue(value, forHTTPHeaderField: name)
+        }
         request.httpMethod = verb
         request.httpBody = body?.data(using: .utf8)
         
@@ -75,7 +75,6 @@ public class RestRequest {
         if exception != nil {
             throw exception!
         }
-        
         return (result, statusCode, resultFormat)
         
     }
