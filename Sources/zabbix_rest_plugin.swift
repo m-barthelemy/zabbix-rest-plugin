@@ -12,8 +12,6 @@ func zbx_module_init() -> Int32 {
     return Zabbix.registerMetrics(metricsList: [
         "rest.request"         : RestMetrics.request,
         "rest.status"          : RestMetrics.status,
-        //"rest.diff"
-        //"rest.discover"           : MongoMetrics.discoverDbsAndCollections,
     ] )
 }
 
@@ -27,8 +25,8 @@ func zbx_module_uninit() -> Int32 {
 
 
 enum RestModuleError : Error {
-    case BadUrl(String)             // Invalid MongoDB URL
-    case BadResponseFormat(String)  // Invalid Mongo query
+    case BadUrl(String)
+    case BadResponseFormat(String)
     case BadParameters(String)      // Invalid number of parameters
 }
 

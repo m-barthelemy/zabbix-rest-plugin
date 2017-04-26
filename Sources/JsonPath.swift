@@ -1,6 +1,5 @@
 //
 //  FlexJsonHelper.swift
-//  zabbix-mongo
 //
 //  Created by Matthieu Barthélemy on 5/16/16.
 //
@@ -39,7 +38,7 @@ public class JsonPath: DataPathExtractor{
         
         let jdata:Data? = data.data(using: .utf8)
         guard jdata != nil else{
-            throw DataError.UnparseableJson("Cannot parse Mongo result data")
+            throw DataError.UnparseableJson("Cannot parse data")
         }
         
         let jsonObject : Any? = try JSONSerialization.jsonObject(with: jdata!, options: .mutableContainers)
